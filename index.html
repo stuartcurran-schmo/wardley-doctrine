@@ -523,6 +523,72 @@
     .rating-btn { font-size: 8px; padding: 3px 6px; }
     .question-row { flex-direction: column; align-items: flex-start; }
   }
+
+  /* ── PRINT / PDF STYLES ── */
+  @media print {
+    /* Force background colours to print — critical for the coloured cells */
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+    body { background: #54575F; color: #fff; font-size: 9px; }
+
+    /* Hide everything except the results grid */
+    header .nav-tabs,
+    .results-header .btn-secondary,
+    .results-header .btn-danger,
+    .btn-print,
+    .respondents-section,
+    #tab-survey,
+    .tooltip { display: none !important; }
+
+    #tab-results { display: block !important; }
+
+    .main { padding: 8px 10px; }
+
+    header {
+      padding: 8px 10px;
+      border-bottom: 1px solid #6a6d75;
+    }
+
+    header h1 { font-size: 11px; }
+    header .subtitle { font-size: 8px; }
+
+    /* Print title row with date */
+    .print-meta { display: block !important; }
+
+    .summary-row {
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .summary-card {
+      padding: 6px 10px;
+    }
+
+    .summary-card .s-value { font-size: 16px; }
+
+    .results-grid th { font-size: 7.5px; padding: 4px 5px; }
+    .doctrine-cell .cell-inner { padding: 4px 5px; }
+    .doctrine-cell .cell-name { font-size: 7.5px; }
+    .doctrine-cell .cell-sub { font-size: 7px; }
+    .doctrine-cell .cell-badge { font-size: 6.5px; padding: 1px 3px; }
+    .cat-cell { font-size: 7.5px; padding: 5px 6px; }
+
+    /* Avoid page breaks inside the table */
+    .results-grid { page-break-inside: avoid; }
+    tr { page-break-inside: avoid; }
+
+    /* Landscape hint */
+    @page { size: A4 landscape; margin: 10mm; }
+  }
+
+  /* Print meta line — hidden on screen, visible in print */
+  .print-meta {
+    display: none;
+    font-size: 9px;
+    color: #aaa;
+    margin-bottom: 8px;
+    letter-spacing: 0.04em;
+  }
 </style>
 </head>
 <body>
@@ -588,8 +654,11 @@
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
         <button class="btn-danger" onclick="clearAllData()">Clear All Data</button>
         <button class="btn-secondary" onclick="showTab('survey')">← Back to Survey</button>
+        <button class="btn-primary btn-print" onclick="printResults()">Export PDF</button>
       </div>
     </div>
+
+    <div class="print-meta" id="printMeta"></div>
 
     <div id="summaryCards" class="summary-row" style="display:none;"></div>
 
@@ -1005,6 +1074,14 @@ function clearAllData() {
   responses = [];
   localStorage.removeItem('wardley_responses');
   buildResults();
+}
+
+function printResults() {
+  const n = responses.length;
+  const dateStr = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" });
+  document.getElementById("printMeta").textContent =
+    "Printed: " + dateStr + "  ·  " + n + " response" + (n !== 1 ? "s" : "") + "  ·  Results show mode (most frequent) rating per practice";
+  window.print();
 }
 
 // ─────────────────────────────────────────────
