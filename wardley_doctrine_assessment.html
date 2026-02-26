@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wardley Doctrine Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #54575F;
+    --good: #008929;
+    --weak: #DCBD23;
+    --bad: #C82706;
+    --neutral: #54575F;
+    --text: #ffffff;
+    --panel: #3d3f45;
+    --border: #6a6d75;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Roboto Mono', monospace;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 12px;
+    min-height: 100vh;
+  }
+
+  header {
+    background: #2c2e33;
+    padding: 16px 24px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  header h1 {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  header .subtitle {
+    font-size: 10px;
+    color: #aaa;
+    margin-top: 2px;
+    letter-spacing: 0.04em;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 2px;
+  }
+
+  .nav-tab {
+    padding: 6px 14px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    background: var(--bg);
+    color: #aaa;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.15s;
+  }
+
+  .nav-tab:hover { background: var(--panel); color: #fff; }
+  .nav-tab.active { background: var(--panel); color: #fff; border-bottom-color: var(--panel); }
+
+  .main { padding: 20px 24px; }
+
+  /* ── SURVEY VIEW ── */
+  .survey-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .progress-bar-wrap {
+    background: #3d3f45;
+    height: 4px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--good);
+    transition: width 0.3s ease;
+  }
+
+  .category-section {
+    margin-bottom: 28px;
+  }
+
+  .category-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #aaa;
+    padding: 6px 10px;
+    background: #2c2e33;
+    border-left: 3px solid var(--border);
+    margin-bottom: 8px;
+  }
+
+  .question-row {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    background: var(--panel);
+    border: 1px solid transparent;
+    margin-bottom: 4px;
+    gap: 12px;
+    transition: border-color 0.15s;
+  }
+
+  .question-row:hover { border-color: var(--border); }
+
+  .question-text {
+    flex: 1;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #ddd;
+  }
+
+  .question-text .sub {
+    font-size: 10px;
+    color: #888;
+    margin-top: 1px;
+  }
+
+  .rating-group {
+    display: flex;
+    gap: 3px;
+    flex-shrink: 0;
+  }
+
+  .rating-btn {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border: 1px solid #555;
+    background: #2c2e33;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .rating-btn:hover { border-color: #999; color: #ccc; }
+
+  .rating-btn.selected-good   { background: var(--good);    color: #fff; border-color: var(--good); }
+  .rating-btn.selected-neutral { background: var(--neutral); color: #fff; border-color: #888; }
+  .rating-btn.selected-weak   { background: var(--weak);    color: #1a1a1a; border-color: var(--weak); }
+  .rating-btn.selected-bad    { background: var(--bad);     color: #fff; border-color: var(--bad); }
+
+  .btn-primary {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    background: var(--good);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+
+  .btn-secondary {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    background: var(--panel);
+    color: #ccc;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-secondary:hover { background: #55575f; }
+
+  .btn-danger {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    background: transparent;
+    color: #ff6b6b;
+    border: 1px solid #ff6b6b;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 10px;
+  }
+  .btn-danger:hover { background: #ff6b6b; color: #fff; }
+
+  /* ── RESULTS VIEW ── */
+  .results-header {
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .results-meta {
+    font-size: 10px;
+    color: #aaa;
+    margin-top: 4px;
+  }
+
+  .results-grid {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .results-grid th {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    background: #2c2e33;
+    padding: 7px 8px;
+    text-align: left;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .results-grid th.cat-col { width: 110px; }
+
+  .results-grid td {
+    font-size: 10px;
+    padding: 0;
+    border: 1px solid #3a3c41;
+    vertical-align: top;
+  }
+
+  .cat-cell {
+    padding: 8px;
+    font-weight: 700;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: #2c2e33;
+    color: #ccc;
+    vertical-align: middle !important;
+  }
+
+  .doctrine-cell {
+    position: relative;
+    cursor: default;
+    min-height: 42px;
+    background: var(--bg);
+    transition: filter 0.1s;
+  }
+
+  .doctrine-cell:hover { filter: brightness(1.12); }
+
+  .doctrine-cell.rating-good    { background: var(--good); }
+  .doctrine-cell.rating-neutral { background: var(--neutral); border: 1px solid #6a6d75; }
+  .doctrine-cell.rating-weak    { background: var(--weak); }
+  .doctrine-cell.rating-bad     { background: var(--bad); }
+
+  .doctrine-cell .cell-inner {
+    padding: 7px 8px;
+    font-size: 9px;
+    line-height: 1.35;
+    color: #fff;
+    height: 100%;
+  }
+
+  .doctrine-cell.rating-weak .cell-inner { color: #1a1a1a; }
+
+  .doctrine-cell .cell-name {
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  .doctrine-cell .cell-sub {
+    font-size: 8.5px;
+    opacity: 0.75;
+    font-weight: 400;
+  }
+
+  .doctrine-cell .cell-badge {
+    display: inline-block;
+    font-size: 7.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 1px 4px;
+    margin-top: 4px;
+    background: rgba(0,0,0,0.25);
+    border-radius: 2px;
+  }
+
+  .doctrine-cell.rating-weak .cell-badge { background: rgba(0,0,0,0.15); color: #1a1a1a; }
+
+  .empty-cell { background: #3d3f45 !important; }
+
+  /* ── RESPONSE BREAKDOWN TOOLTIP ── */
+  .tooltip {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 100;
+    background: #1e1f23;
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+    min-width: 180px;
+    font-size: 9px;
+    line-height: 1.6;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+
+  .doctrine-cell:hover .tooltip { display: block; }
+
+  .tooltip-title { font-weight: 700; margin-bottom: 4px; font-size: 9.5px; color: #fff; }
+
+  .tooltip-bar-row { display: flex; align-items: center; gap: 5px; margin-bottom: 2px; }
+  .tooltip-label { width: 60px; color: #aaa; }
+  .tooltip-bar { height: 8px; border-radius: 1px; transition: width 0.3s; }
+  .tooltip-count { color: #ccc; min-width: 14px; }
+
+  /* ── SUMMARY CARDS ── */
+  .summary-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .summary-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 12px 16px;
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .summary-card .s-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 4px;
+  }
+
+  .summary-card .s-value {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .summary-card .s-value.good    { color: var(--good); }
+  .summary-card .s-value.weak    { color: var(--weak); }
+  .summary-card .s-value.bad     { color: var(--bad); }
+  .summary-card .s-value.neutral { color: #888; }
+  .summary-card .s-value.default { color: #ccc; }
+
+  /* ── RESPONDENTS TABLE ── */
+  .respondents-section {
+    margin-top: 24px;
+  }
+
+  .section-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .resp-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .resp-table th {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: #2c2e33;
+    color: #ccc;
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+
+  .resp-table td {
+    font-size: 10px;
+    padding: 6px 8px;
+    border: 1px solid #3a3c41;
+    background: var(--panel);
+    color: #ccc;
+  }
+
+  .resp-table tr:hover td { background: #4a4d55; }
+
+  .rating-pill {
+    display: inline-block;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 2px;
+  }
+
+  .pill-good    { background: var(--good);    color: #fff; }
+  .pill-weak    { background: var(--weak);    color: #1a1a1a; }
+  .pill-bad     { background: var(--bad);     color: #fff; }
+  .pill-neutral { background: #555;            color: #ccc; }
+
+  /* ── KEY / LEGEND ── */
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    align-items: center;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    color: #ccc;
+  }
+
+  .legend-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ── RESPONDENT NAME INPUT ── */
+  .name-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding: 10px 12px;
+    background: #2c2e33;
+    border: 1px solid var(--border);
+  }
+
+  .name-input-row label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #aaa;
+    white-space: nowrap;
+  }
+
+  .name-input-row input {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 11px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: #fff;
+    padding: 5px 10px;
+    flex: 1;
+    outline: none;
+  }
+
+  .name-input-row input:focus { border-color: #999; }
+
+  .completion-notice {
+    display: none;
+    background: var(--good);
+    color: #fff;
+    padding: 12px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    margin-bottom: 16px;
+  }
+
+  .actions-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 700px) {
+    .rating-group { flex-wrap: wrap; }
+    .rating-btn { font-size: 8px; padding: 3px 6px; }
+    .question-row { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Wardley Doctrine Assessment</h1>
+    <div class="subtitle">Universally useful patterns — assess your organisation</div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('survey')">Survey</button>
+    <button class="nav-tab" onclick="showTab('results')">Results</button>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- ══════════════ SURVEY TAB ══════════════ -->
+  <div id="tab-survey">
+
+    <div class="name-input-row">
+      <label>Respondent name:</label>
+      <input type="text" id="respondentName" placeholder="Enter your name or team..." />
+    </div>
+
+    <div id="completionNotice" class="completion-notice">
+      ✓ Response recorded. Switch to the Results tab to view the aggregated assessment.
+    </div>
+
+    <div class="survey-header">
+      <div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">Rate each doctrine practice</div>
+        <div style="font-size:10px;color:#888;margin-top:3px;" id="progressText">0 of 40 answered</div>
+      </div>
+      <div class="actions-row" style="margin-top:0;">
+        <button class="btn-secondary" onclick="clearSurvey()">Clear</button>
+        <button class="btn-primary" onclick="submitResponse()">Submit Response</button>
+      </div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--good)"></div> Good</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#444;border:1px solid #6a6d75"></div> Neutral / Unknown</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--weak)"></div> Weak</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--bad)"></div> Bad</div>
+    </div>
+
+    <div id="surveyQuestions"></div>
+  </div>
+
+  <!-- ══════════════ RESULTS TAB ══════════════ -->
+  <div id="tab-results" style="display:none;">
+
+    <div class="results-header">
+      <div>
+        <div style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">Doctrine Assessment Results</div>
+        <div class="results-meta" id="resultsMeta">No responses yet. Submit a survey response to see results.</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <button class="btn-danger" onclick="clearAllData()">Clear All Data</button>
+        <button class="btn-secondary" onclick="showTab('survey')">← Back to Survey</button>
+      </div>
+    </div>
+
+    <div id="summaryCards" class="summary-row" style="display:none;"></div>
+
+    <div class="legend" style="margin-bottom:12px;">
+      <span style="font-size:10px;color:#888;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-right:4px;">Mode of responses:</span>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--good)"></div> Good</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#444;border:1px solid #6a6d75"></div> Neutral / Unknown</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--weak)"></div> Weak</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--bad)"></div> Bad</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--bg)"></div> No responses</div>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <table class="results-grid" id="resultsGrid">
+        <thead>
+          <tr id="resultsHeader"></tr>
+        </thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+    </div>
+
+    <div class="respondents-section" id="respondentsSection" style="display:none;">
+      <div class="section-title">Individual Responses</div>
+      <table class="resp-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Submitted</th>
+            <th>Good</th>
+            <th>Neutral</th>
+            <th>Weak</th>
+            <th>Bad</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="respondentsBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// DATA MODEL
+// ─────────────────────────────────────────────
+
+const CATEGORIES = [
+  {
+    name: 'Communication',
+    practices: [
+      { name: 'Be transparent', sub: 'a bias towards open' },
+      { name: 'Focus on high situational awareness', sub: 'understand what is being considered' },
+      { name: 'Use a common language', sub: 'necessary for collaboration' },
+      { name: 'Challenge assumptions', sub: 'speak up and question' },
+    ]
+  },
+  {
+    name: 'Development',
+    practices: [
+      { name: 'Know your users', sub: 'e.g. customers, shareholders, regulators, staff' },
+      { name: 'Focus on user needs', sub: '' },
+      { name: 'Think FIRE', sub: 'fast, inexpensive, restrained and elegant' },
+      { name: 'Remove bias and duplication', sub: '' },
+      { name: 'Use appropriate methods', sub: 'e.g. agile vs lean vs six sigma' },
+      { name: 'Focus on the outcome not a contract', sub: 'e.g. worth based development' },
+      { name: 'Be pragmatic', sub: "it doesn't matter if the cat is black or white as long as it catches mice" },
+      { name: 'Use standards where appropriate', sub: '' },
+      { name: 'Use appropriate tools', sub: 'e.g. mapping, financial models' },
+    ]
+  },
+  {
+    name: 'Operation',
+    practices: [
+      { name: 'Manage inertia', sub: 'e.g. existing practice, political capital, previous investment' },
+      { name: 'Optimise flow', sub: 'remove bottlenecks' },
+      { name: 'Think small', sub: 'know the details' },
+      { name: 'Effectiveness over efficiency', sub: '' },
+      { name: 'Do better with less', sub: 'continual improvement' },
+      { name: 'Set exceptional standards', sub: 'great is just not good enough' },
+      { name: 'Manage failure', sub: '' },
+    ]
+  },
+  {
+    name: 'Structure',
+    practices: [
+      { name: 'Provide purpose, mastery & autonomy', sub: '' },
+      { name: 'Think small', sub: 'teams, "two pizza"' },
+      { name: 'Distribute power and decision making', sub: '' },
+      { name: 'Think aptitude and attitude', sub: '' },
+      { name: 'Design for constant evolution', sub: '' },
+      { name: 'There is no one culture', sub: 'e.g. pioneers, settlers and town planners' },
+      { name: 'Seek the best', sub: '' },
+    ]
+  },
+  {
+    name: 'Learning',
+    practices: [
+      { name: 'Use a systematic mechanism of learning', sub: 'a bias towards data' },
+      { name: 'A bias towards action', sub: 'learn by playing the game' },
+      { name: 'A bias towards the new', sub: 'be curious, take appropriate risks' },
+      { name: 'Listen to your ecosystem', sub: 'acts as a future sensing engine' },
+    ]
+  },
+  {
+    name: 'Leading',
+    practices: [
+      { name: 'Be the owner', sub: 'take responsibility' },
+      { name: 'Move fast', sub: 'an imperfect plan executed today is better than a perfect plan executed tomorrow' },
+      { name: 'Think big', sub: 'inspire others, provide direction' },
+      { name: 'Strategy is iterative not linear', sub: 'fast reactive cycles' },
+      { name: 'Strategy is complex', sub: 'there will be uncertainty' },
+      { name: 'Commit to the direction, be adaptive along the path', sub: 'crossing the river by feeling the stones' },
+      { name: 'There is no core', sub: 'everything is transient' },
+      { name: 'Be humble', sub: 'listen, be selfless, have fortitude' },
+      { name: 'Exploit the landscape', sub: '' },
+    ]
+  }
+];
+
+// Flatten to indexed list for survey
+const ALL_PRACTICES = [];
+CATEGORIES.forEach((cat, ci) => {
+  cat.practices.forEach((p, pi) => {
+    ALL_PRACTICES.push({ ...p, category: cat.name, catIdx: ci, pracIdx: pi, globalIdx: ALL_PRACTICES.length });
+  });
+});
+
+const RATINGS = ['Good', 'Neutral / unknown', 'Weak', 'Bad'];
+const RATING_CLASS = { 'Good': 'good', 'Neutral / unknown': 'neutral', 'Weak': 'weak', 'Bad': 'bad' };
+const RATING_SHORT = { 'Good': 'Good', 'Neutral / unknown': 'Neutral', 'Weak': 'Weak', 'Bad': 'Bad' };
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+
+let currentAnswers = {};
+let responses = JSON.parse(localStorage.getItem('wardley_responses') || '[]');
+
+// ─────────────────────────────────────────────
+// BUILD SURVEY
+// ─────────────────────────────────────────────
+
+function buildSurvey() {
+  const container = document.getElementById('surveyQuestions');
+  container.innerHTML = '';
+
+  CATEGORIES.forEach(cat => {
+    const section = document.createElement('div');
+    section.className = 'category-section';
+
+    const label = document.createElement('div');
+    label.className = 'category-label';
+    label.textContent = cat.name;
+    section.appendChild(label);
+
+    cat.practices.forEach((p, pi) => {
+      const globalIdx = ALL_PRACTICES.find(a => a.category === cat.name && a.pracIdx === pi).globalIdx;
+
+      const row = document.createElement('div');
+      row.className = 'question-row';
+      row.id = `q-${globalIdx}`;
+
+      const txt = document.createElement('div');
+      txt.className = 'question-text';
+      txt.innerHTML = `<span>${p.name}</span>${p.sub ? `<div class="sub">${p.sub}</div>` : ''}`;
+
+      const rg = document.createElement('div');
+      rg.className = 'rating-group';
+
+      RATINGS.forEach(rating => {
+        const btn = document.createElement('button');
+        btn.className = 'rating-btn';
+        btn.dataset.rating = rating;
+        btn.dataset.idx = globalIdx;
+        btn.textContent = RATING_SHORT[rating];
+        btn.onclick = () => selectRating(globalIdx, rating);
+        rg.appendChild(btn);
+      });
+
+      row.appendChild(txt);
+      row.appendChild(rg);
+      section.appendChild(row);
+    });
+
+    container.appendChild(section);
+  });
+
+  updateProgress();
+}
+
+function selectRating(idx, rating) {
+  currentAnswers[idx] = rating;
+
+  // Update button states for this question
+  document.querySelectorAll(`[data-idx="${idx}"]`).forEach(btn => {
+    btn.className = 'rating-btn';
+    if (btn.dataset.rating === rating) {
+      btn.classList.add(`selected-${RATING_CLASS[rating]}`);
+    }
+  });
+
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = Object.keys(currentAnswers).length;
+  const total = ALL_PRACTICES.length;
+  document.getElementById('progressText').textContent = `${answered} of ${total} answered`;
+  document.getElementById('progressBar').style.width = `${(answered / total) * 100}%`;
+}
+
+function clearSurvey() {
+  currentAnswers = {};
+  document.querySelectorAll('.rating-btn').forEach(btn => btn.className = 'rating-btn');
+  document.getElementById('respondentName').value = '';
+  document.getElementById('completionNotice').style.display = 'none';
+  updateProgress();
+}
+
+function submitResponse() {
+  const answered = Object.keys(currentAnswers).length;
+  if (answered < ALL_PRACTICES.length) {
+    if (!confirm(`You have answered ${answered} of ${ALL_PRACTICES.length} questions. Submit anyway?`)) return;
+  }
+  const name = document.getElementById('respondentName').value.trim() || `Respondent ${responses.length + 1}`;
+  const response = {
+    name,
+    timestamp: new Date().toISOString(),
+    answers: { ...currentAnswers }
+  };
+  responses.push(response);
+  localStorage.setItem('wardley_responses', JSON.stringify(responses));
+  document.getElementById('completionNotice').style.display = 'block';
+  clearSurvey();
+}
+
+// ─────────────────────────────────────────────
+// COMPUTE MODE
+// ─────────────────────────────────────────────
+
+function computeMode(vals) {
+  if (!vals || vals.length === 0) return null;
+  const counts = {};
+  vals.forEach(v => { counts[v] = (counts[v] || 0) + 1; });
+  let maxCount = 0, mode = null;
+  RATINGS.forEach(r => {
+    if ((counts[r] || 0) > maxCount) { maxCount = counts[r]; mode = r; }
+  });
+  return mode;
+}
+
+// ─────────────────────────────────────────────
+// BUILD RESULTS
+// ─────────────────────────────────────────────
+
+function buildResults() {
+  const n = responses.length;
+  document.getElementById('resultsMeta').textContent =
+    n === 0 ? 'No responses yet. Submit a survey response to see results.'
+    : `${n} response${n !== 1 ? 's' : ''} collected`;
+
+  const summaryCards = document.getElementById('summaryCards');
+  const respondentsSection = document.getElementById('respondentsSection');
+
+  if (n === 0) {
+    summaryCards.style.display = 'none';
+    respondentsSection.style.display = 'none';
+    buildResultsGrid(null);
+    return;
+  }
+
+  // Tally overall
+  let tally = { Good: 0, 'Neutral / unknown': 0, Weak: 0, Bad: 0 };
+  let total = 0;
+  responses.forEach(r => {
+    Object.values(r.answers).forEach(v => {
+      if (tally[v] !== undefined) { tally[v]++; total++; }
+    });
+  });
+
+  summaryCards.style.display = 'flex';
+  summaryCards.innerHTML = `
+    <div class="summary-card"><div class="s-label">Responses</div><div class="s-value default">${n}</div></div>
+    <div class="summary-card"><div class="s-label">Good</div><div class="s-value good">${tally['Good']}</div></div>
+    <div class="summary-card"><div class="s-label">Neutral</div><div class="s-value neutral">${tally['Neutral / unknown']}</div></div>
+    <div class="summary-card"><div class="s-label">Weak</div><div class="s-value weak">${tally['Weak']}</div></div>
+    <div class="summary-card"><div class="s-label">Bad</div><div class="s-value bad">${tally['Bad']}</div></div>
+  `;
+
+  buildResultsGrid(responses);
+  buildRespondentsTable();
+  respondentsSection.style.display = 'block';
+}
+
+function buildResultsGrid(responses) {
+  const headerRow = document.getElementById('resultsHeader');
+  const body = document.getElementById('resultsBody');
+
+  // Find max practices in any category
+  const maxPractices = Math.max(...CATEGORIES.map(c => c.practices.length));
+
+  // Header
+  headerRow.innerHTML = `<th class="cat-col">Category</th>`;
+  for (let i = 1; i <= maxPractices; i++) {
+    headerRow.innerHTML += `<th>Practice ${i}</th>`;
+  }
+
+  body.innerHTML = '';
+
+  CATEGORIES.forEach(cat => {
+    const tr = document.createElement('tr');
+
+    // Category cell
+    const catTd = document.createElement('td');
+    catTd.className = 'cat-cell';
+    catTd.textContent = cat.name;
+    tr.appendChild(catTd);
+
+    cat.practices.forEach(p => {
+      const globalIdx = ALL_PRACTICES.find(a => a.category === cat.name && a.name === p.name && a.sub === p.sub).globalIdx;
+
+      // Gather all responses for this practice
+      const vals = responses ? responses.map(r => r.answers[globalIdx]).filter(Boolean) : [];
+      const mode = computeMode(vals);
+      const counts = {};
+      vals.forEach(v => { counts[v] = (counts[v] || 0) + 1; });
+
+      const td = document.createElement('td');
+      td.className = 'doctrine-cell' + (mode ? ` rating-${RATING_CLASS[mode]}` : '');
+
+      const inner = document.createElement('div');
+      inner.className = 'cell-inner';
+
+      let badge = mode ? `<div class="cell-badge">${RATING_SHORT[mode]}</div>` : '';
+      inner.innerHTML = `
+        <div class="cell-name">${p.name}</div>
+        ${p.sub ? `<div class="cell-sub">${p.sub}</div>` : ''}
+        ${badge}
+      `;
+
+      // Tooltip with breakdown
+      if (vals.length > 0) {
+        const maxCount = Math.max(...Object.values(counts));
+        const tooltipHTML = `
+          <div class="tooltip">
+            <div class="tooltip-title">${p.name}</div>
+            ${RATINGS.map(r => {
+              const c = counts[r] || 0;
+              const w = maxCount > 0 ? Math.round((c / maxCount) * 60) : 0;
+              const col = r === 'Good' ? '#008929' : r === 'Weak' ? '#DCBD23' : r === 'Bad' ? '#C82706' : '#666';
+              return `<div class="tooltip-bar-row">
+                <span class="tooltip-label">${RATING_SHORT[r]}</span>
+                <div class="tooltip-bar" style="width:${w}px;background:${col}"></div>
+                <span class="tooltip-count">${c}</span>
+              </div>`;
+            }).join('')}
+            <div style="margin-top:5px;color:#888;font-size:8.5px;">${vals.length} response${vals.length !== 1 ? 's' : ''}</div>
+          </div>`;
+        inner.insertAdjacentHTML('beforeend', tooltipHTML);
+      }
+
+      td.appendChild(inner);
+      tr.appendChild(td);
+    });
+
+    // Fill remaining columns with empty cells
+    for (let i = cat.practices.length; i < maxPractices; i++) {
+      const empty = document.createElement('td');
+      empty.className = 'doctrine-cell empty-cell';
+      tr.appendChild(empty);
+    }
+
+    body.appendChild(tr);
+  });
+}
+
+function buildRespondentsTable() {
+  const tbody = document.getElementById('respondentsBody');
+  tbody.innerHTML = '';
+
+  responses.forEach((r, i) => {
+    const tally = { Good: 0, 'Neutral / unknown': 0, Weak: 0, Bad: 0 };
+    Object.values(r.answers).forEach(v => { if (tally[v] !== undefined) tally[v]++; });
+
+    const date = new Date(r.timestamp);
+    const dateStr = date.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) + ' ' +
+                    date.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${r.name}</td>
+      <td style="color:#888">${dateStr}</td>
+      <td><span class="rating-pill pill-good">${tally['Good']}</span></td>
+      <td><span class="rating-pill pill-neutral">${tally['Neutral / unknown']}</span></td>
+      <td><span class="rating-pill pill-weak">${tally['Weak']}</span></td>
+      <td><span class="rating-pill pill-bad">${tally['Bad']}</span></td>
+      <td><button class="btn-danger" onclick="deleteResponse(${i})">Remove</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function deleteResponse(idx) {
+  if (!confirm('Remove this response?')) return;
+  responses.splice(idx, 1);
+  localStorage.setItem('wardley_responses', JSON.stringify(responses));
+  buildResults();
+}
+
+function clearAllData() {
+  if (!confirm('Clear ALL response data? This cannot be undone.')) return;
+  responses = [];
+  localStorage.removeItem('wardley_responses');
+  buildResults();
+}
+
+// ─────────────────────────────────────────────
+// TAB NAVIGATION
+// ─────────────────────────────────────────────
+
+function showTab(tab) {
+  document.getElementById('tab-survey').style.display = tab === 'survey' ? 'block' : 'none';
+  document.getElementById('tab-results').style.display = tab === 'results' ? 'block' : 'none';
+  document.querySelectorAll('.nav-tab').forEach((t, i) => {
+    t.classList.toggle('active', (i === 0 && tab === 'survey') || (i === 1 && tab === 'results'));
+  });
+  if (tab === 'results') buildResults();
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+buildSurvey();
+buildResults();
+</script>
+</body>
+</html>
